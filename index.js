@@ -34,12 +34,28 @@ app.get("/transactions/:user/:top", (req, res) => {
     })
     .catch((err) => console.log(err));
 });
-app.get("/transaction/delete/:id", (req, res) => {
-  Transaction.deleteOne({ _id: req.params.id })
-    .then((result) => {
+app.post("/transaction/delete", async (req, res) => {
+  let transactionId = req.body.transactionId
+  let userId = req.body.userId
+  let transaction = await Transaction.findById(transactionId);
+  if(transaction){ 
+    Transaction.deleteOne({ _id: transactionId })
+    .then(async (result) => {
+      const user = await User.findByFirebaseId(userId);
+      console.log(user.balance.toString(),'u')
+      console.log(parseFloat(user.balance),'u',parseFloat(transaction.amount))
+      if(transaction.type){
+        user.balance =  parseFloat(user.balance) -  parseFloat(transaction.amount)
+      }else{
+          user.balance =  parseFloat(user.balance) +  parseFloat(transaction.amount)
+      } 
+      await user.save();
+      console.log(result)
       res.send({ success: true, result });
     })
     .catch((err) => console.log(err));
+  }
+  
 });
 app.get("/transactions/:user/all", (req, res) => {
   console.log("GEt transaction requrest", req.params.user);

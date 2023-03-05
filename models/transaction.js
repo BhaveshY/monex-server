@@ -27,6 +27,20 @@ transactionSchema.post('save', async function (transaction, next) {
     next();
 });
 
+// transactionSchema.pre('deleteOne', async function (transaction, next) {
+//     console.log(this._conditions,'conditions');
+//     const user =await User.findByFirebaseId(transaction.user);
+//     console.log(user.balance.toString(),'u')
+//     console.log(parseFloat(user.balance),'u',parseFloat(transaction.amount))
+//     if(transaction.type){
+//        user.balance =  parseFloat(user.balance) +  parseFloat(transaction.amount)
+//     }else{
+//         user.balance =  parseFloat(user.balance) -  parseFloat(transaction.amount)
+//     }
+//     user.save();
+//     next();
+// });
+
 const Transaction = mongoose.model('Transaction', transactionSchema)
 
 module.exports = Transaction
