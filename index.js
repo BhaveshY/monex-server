@@ -63,7 +63,11 @@ app.get("/transactions/:user/all", (req, res) => {
     .then((result) => {
       res.send({ success: true, result });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err)
+      res.send({ success: false, error:err });
+    }
+    );
 });
 app.get("/balance/:user", (req, res) => {
   User.findOne({ firebaseId: req.params.user })
