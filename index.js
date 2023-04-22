@@ -58,11 +58,10 @@ app.post("/transaction/delete", async (req, res) => {
   
 });
 app.get("/transactions/:user/all", (req, res) => {
-  console.log("GEt transaction requrest", req.params.user);
   Transaction.find({ user: req.params.user })
     .sort({ createdAt: -1 })
     .then((result) => {
-      res.send(result);
+      res.send({ success: true, result });
     })
     .catch((err) => console.log(err));
 });
