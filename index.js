@@ -25,7 +25,8 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-app.get("/transactions/:user/:top", (req, res) => {
+
+app.get("/transactions/:user/:top(\\d+)", (req, res) => {
   Transaction.find({ user: req.params.user })
     .sort({ createdAt: -1 })
     .limit(req.params.top)
@@ -33,6 +34,18 @@ app.get("/transactions/:user/:top", (req, res) => {
       res.send({ success: true, result });
     })
     .catch((err) => console.log(err));
+});
+app.get("/transactions/:user/all", (req, res) => {
+  Transaction.find({ user: req.params.user })
+    .sort({ createdAt: -1 })
+    .then((result) => {
+      res.send({ success: true, result });
+    })
+    .catch((err) => {
+      console.log(err)
+      res.send({ success: false, error:err });
+    }
+    );
 });
 app.post("/transaction/delete", async (req, res) => {
   let transactionId = req.body.transactionId
@@ -57,18 +70,7 @@ app.post("/transaction/delete", async (req, res) => {
   }
   
 });
-app.get("/transactions/:user/all", (req, res) => {
-  Transaction.find({ user: req.params.user })
-    .sort({ createdAt: -1 })
-    .then((result) => {
-      res.send({ success: true, result });
-    })
-    .catch((err) => {
-      console.log(err)
-      res.send({ success: false, error:err });
-    }
-    );
-});
+
 app.get("/balance/:user", (req, res) => {
   User.findOne({ firebaseId: req.params.user })
     .then((result) => {
